@@ -57,8 +57,15 @@ echo "Data do Registro: $dataAtual" . PHP_EOL;
 echo "Informe o nome do responsável pelo lançamento: ";
 $responsavel = trim(readline());
 
-echo "Quantas culturas serão registradas? ";
-$qtdCulturas = (int) readline();
+// Validação para garantir que a quantidade de culturas seja maior que 0
+do {
+    echo "Quantas culturas serão registradas? ";
+    $qtdCulturas = (int) readline();
+    
+    if ($qtdCulturas <= 0) {
+        echo "-> ERRO: O número de culturas deve ser maior que 0." . PHP_EOL;
+    }
+} while ($qtdCulturas <= 0);
 
 $culturasValidas = [];
 $totalKgAcumulado = 0.0;
@@ -71,34 +78,39 @@ for ($i = 1; $i <= $qtdCulturas; $i++) {
     echo "Nome da cultura: ";
     $nomeCultura = trim(readline());
     
-    echo "Quantidade produzida (em kg): ";
-    $qtdKg = (float) readline();
+    // Validação da Quantidade (deve ser maior que zero)
+    do {
+        echo "Quantidade produzida (em kg): ";
+        $qtdKg = (float) readline();
+        if ($qtdKg <= 0) {
+            echo "-> ERRO: A quantidade deve ser um valor positivo maior que 0." . PHP_EOL;
+        }
+    } while ($qtdKg <= 0);
     
-    echo "Valor estimado por kg (R$): ";
-    $valorKg = (float) readline();
+    // Validação do Valor por kg (deve ser maior que zero)
+    do {
+        echo "Valor estimado por kg (R$): ";
+        $valorKg = (float) readline();
+        if ($valorKg <= 0) {
+            echo "-> ERRO: O valor por kg deve ser um valor positivo maior que 0." . PHP_EOL;
+        }
+    } while ($valorKg <= 0);
     
-    // Validação: Quantidade e Valor por kg devem ser maiores que zero
-    if ($qtdKg > 0 && $valorKg > 0) {
-        $valorProducao = calcularValorProducao($qtdKg, $valorKg);
-        
-        // Armazena os dados da cultura válida
-        $culturasValidas[] = [
-            'nome' => $nomeCultura,
-            'qtd' => $qtdKg,
-            'valor_kg' => $valorKg,
-            'valor_total' => $valorProducao
-        ];
-        
-        // Acumula os totais
-        $totalKgAcumulado += $qtdKg;
-        $valorTotalAcumulado += $valorProducao;
-        
-        echo "-> Cultura '$nomeCultura' cadastrada com sucesso!" . PHP_EOL;
-    } else {
-        // Registro inválido: notifica e continua o cadastro sem interromper
-        echo "-> ERRO: Registro inválido! Quantidade e Valor por kg devem ser maiores que 0." . PHP_EOL;
-        echo "   A cultura '$nomeCultura' foi ignorada nos cálculos." . PHP_EOL;
-    }
+    $valorProducao = calcularValorProducao($qtdKg, $valorKg);
+    
+    // Armazena os dados da cultura válida
+    $culturasValidas[] = [
+        'nome' => $nomeCultura,
+        'qtd' => $qtdKg,
+        'valor_kg' => $valorKg,
+        'valor_total' => $valorProducao
+    ];
+    
+    // Acumula os totais
+    $totalKgAcumulado += $qtdKg;
+    $valorTotalAcumulado += $valorProducao;
+    
+    echo "-> Cultura '$nomeCultura' cadastrada com sucesso!" . PHP_EOL;
 }
 
 // -----------------------------------------------------------------------------
@@ -106,7 +118,7 @@ for ($i = 1; $i <= $qtdCulturas; $i++) {
 // -----------------------------------------------------------------------------
 
 echo PHP_EOL . "==========================================" . PHP_EOL;
-echo "            RELATÓRIO FINAL               " . PHP_EOL;
+echo "               RELATÓRIO FINAL               " . PHP_EOL;
 echo "==========================================" . PHP_EOL;
 
 echo "CULTURAS REGISTRADAS:" . PHP_EOL;
